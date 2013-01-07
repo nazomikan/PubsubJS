@@ -1,0 +1,4 @@
+PubsubJS
+========
+
+Micro pubsub library
