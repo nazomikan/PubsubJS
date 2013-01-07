@@ -1,0 +1,25 @@
+{
+  "name": "pubsubjs",
+  "version": "1.0.2",
+  "description": "micro pubsub library",
+  "tags": ["node", "pubsub", "browser"],
+  "author": "nazomikan <nazomikan@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nazomikan/PusubJS.git"
+  },
+  "homepage": "https://github.com/nazomikan/PubsubJS",
+  "bugs": {
+    "web": "https://github.com/nazomikan/PubsubJS/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/nazomikan/PubsubJS/blob/master/MIT-LICENSE.txt"
+    }
+  ],
+  "devDependencies": {
+    "mocha": "1.7.4"
+  },
+  "main": "./src/pubsub.js"
+}
