@@ -10,7 +10,8 @@
   function Context () {
     this.subscribers = {};
   }
-  Context.create = function createContext(isGlobal) {
+
+  Context.create = function createContext() {
     var context = createObject(Context.prototype);
     args = Array.prototype.slice.call(arguments);
     Context.apply(context, args);
@@ -22,20 +23,20 @@
     this.subscribers[eventName].push(handler);
   };
 
-  Context.prototype.publish = function (eventName, args) {
+  Context.prototype.publish = function (eventName, context, args) {
     var subscribers = this.subscribers[eventName] || []
       , i
       , l
       ;
 
     for (i = 0, l = subscribers.length; i < l; i++) {
-      subscribers[i].apply(null, args);
+      subscribers[i].apply(null, [context].concat(args));
     }
   };
 
   function Pubsub () {
     this.Context = Context;
-    this.globalContext = Context.create(true);
+    this.globalContext = Context.create();
   }
 
   Pubsub.create = function () {
@@ -46,16 +47,18 @@
   }
 
   Pubsub.prototype.publish = function (eventName, context, args) {
-    context = context || this.globalContext;
-    context.publish(eventName, args);
+    var globalContext = this.globalContext;
+    context = context || globalContext;
+
+    globalContext.publish.apply(globalContext, [eventName, context].concat([args]));
   };
 
   Pubsub.prototype.subscribe = function (eventName, handler) {
     var context = this.globalContext;
-    context.subslibe(eventName, handler);
+    context.subscribe(eventName, handler);
   };
 
-  function objectCreate(obj) {
+  function createObject(obj) {
     if (Object.create) {
       return Object.create(obj);
     }
@@ -68,5 +71,5 @@
     return new F();
   }
 
-  return Pubsub.create();
+  return Pubsub;
 });

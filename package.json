@@ -1,6 +1,6 @@
 {
   "name": "pubsubjs",
-  "version": "1.0.2",
+  "version": "0.0.1",
   "description": "micro pubsub library",
   "tags": ["node", "pubsub", "browser"],
   "author": "nazomikan <nazomikan@gmail.com>",
