@@ -3,7 +3,7 @@ PubsubJS
 
 Micro pubsub library
 
-    var pubsub = require('pubsubjs');
+    var pubsub = require('pubsubjs').create();
 
     //pubsub
     $(a).bind('click', function (evt, ...) {
