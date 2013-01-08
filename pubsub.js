@@ -7,13 +7,18 @@
     global[name] = definition();
   }
 })('pubsub', this, function () {
+  var arrayProto = Array.prototype
+    , slice = arrayProto.slice
+    ;
+
   function Context () {
     this.subscribers = {};
   }
 
   Context.create = function createContext() {
-    var context = createObject(Context.prototype);
-    args = Array.prototype.slice.call(arguments);
+    var context = createObject(Context.prototype)
+      , args = slice.call(arguments);
+
     Context.apply(context, args);
     return context;
   };
@@ -23,8 +28,11 @@
     this.subscribers[eventName].push(handler);
   };
 
-  Context.prototype.publish = function (eventName, context, args) {
-    var subscribers = this.subscribers[eventName] || []
+  Context.prototype.publish = function (/*eventName, context, args*/) {
+    var args = slice.call(arguments)
+      , eventName = args.shift()
+      , context = args.shift()
+      , subscribers = this.subscribers[eventName] || []
       , i
       , l
       ;
@@ -40,17 +48,21 @@
   }
 
   Pubsub.create = function () {
-    var pubsub = createObject(Pubsub.prototype);
-    args = Array.prototype.slice.call(arguments);
+    var pubsub = createObject(Pubsub.prototype)
+      , args = slice.call(arguments);
+
     Pubsub.apply(pubsub, args);
     return pubsub;
   }
 
-  Pubsub.prototype.publish = function (eventName, context, args) {
-    var globalContext = this.globalContext;
-    context = context || globalContext;
+  Pubsub.prototype.publish = function (/*eventName, context, args*/) {
+    var args = slice.call(arguments)
+      , eventName = args.shift()
+      , globalContext = this.globalContext
+      , context = args.shift()
+      ;
 
-    globalContext.publish.apply(globalContext, [eventName, context].concat([args]));
+    globalContext.publish.apply(globalContext, [eventName, context].concat(args));
   };
 
   Pubsub.prototype.subscribe = function (eventName, handler) {

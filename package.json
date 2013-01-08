@@ -21,5 +21,8 @@
   "devDependencies": {
     "mocha": "1.7.4"
   },
-  "main": "./src/pubsub.js"
+  "scripts": {
+    "test": "mocha test/pubsub-test.js"
+  },
+  "main": "pubsub.js"
 }
