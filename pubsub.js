@@ -6,12 +6,12 @@
   } else {
     global[name] = definition();
   }
-})('pubsub', this, function () {
+})('Pubsub', this, function () {
   var arrayProto = Array.prototype
     , slice = arrayProto.slice
     ;
 
-  function Context () {
+  function Context() {
     this.subscribers = {};
   }
 
@@ -42,7 +42,7 @@
     }
   };
 
-  function Pubsub () {
+  function Pubsub() {
     this.Context = Context;
     this.globalContext = Context.create();
   }
