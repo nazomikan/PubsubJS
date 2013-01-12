@@ -1,6 +1,8 @@
 PubsubJS
 ===
 
+[![build status](https://secure.travis-ci.org/nazomikan/PubsubJS.png)](http://travis-ci.org/nazomikan/PubsubJS)
+
 ## Description
 
 pubsubjs is Micro pubsub library which provides the observer pattern to JavaScript object.
