@@ -123,6 +123,7 @@ This can be solved by using the pubsub#Context.
     });
 
 ##All API
+ * Pubsub#create()
  * pubsub#publish(eventName, context/null, arg1, arg2...)
  * pubsub#subscribe(eventName, handler)
  * pubsub#globalContext
