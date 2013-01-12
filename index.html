@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pubsubjs by nazomikan</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Pubsubjs</h1>
+        <p>Micro pubsub library</p>
+
+        <p class="view"><a href="https://github.com/nazomikan/PubsubJS">View the Project on GitHub <small>nazomikan/PubsubJS</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/nazomikan/PubsubJS/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nazomikan/PubsubJS/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nazomikan/PubsubJS">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>PubsubJS</h1>
+
+<p><a href="http://travis-ci.org/nazomikan/PubsubJS"><img src="https://secure.travis-ci.org/nazomikan/PubsubJS.png" alt="build status"></a></p>
+
+<h2>Description</h2>
+
+<p>pubsubjs is Micro pubsub library which provides the observer pattern to JavaScript object.</p>
+
+<p>It works in the browser and server (Node).</p>
+
+<h2>Usage</h2>
+
+<p>In browser include single JavaScript file:</p>
+
+<pre><code>&lt;script type="text/javascript" src="pubsub.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+    var pubsub = Pubsub.create();
+    ...
+&lt;/script&gt;
+</code></pre>
+
+<p>On server install PubsubJS via npm first:</p>
+
+<pre><code>npm install pubsubjs
+</code></pre>
+
+<p>and then include it in your project with:</p>
+
+<pre><code>var pubsub = require('pubsubjs').create();
+</code></pre>
+
+<h2>What is Pubsub</h2>
+
+<blockquote>
+<p>Publish–subscribe is a messaging pattern where senders of messages, called publishers, do not program the messages to be sent directly to specific receivers, called subscribers. Published messages are characterized into classes, without knowledge of what, if any, subscribers there may be. Subscribers express interest in one or more classes, and only receives messages that are of interest, without knowledge of what, if any, publishers there are.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern">http://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern</a></p>
+</blockquote>
+
+<h2>Example Usage</h2>
+
+<h3>pubsub#publish / pubsub#subscribe</h3>
+
+<p>For example, "The display of notifications and mail to desktop when mail arrives" can be written using B as follows.</p>
+
+<pre><code>// Define the global subscriber use of pubsubjs
+pubsub.subscribe('mail:arrived', function (context, mailId) {
+    mailer.display(mailId);
+});
+
+pubsub.subscribe('mail:arrived', function (context, mailId) {
+    desktop.notice('a mail has arrived');
+});
+
+mailer.polling({
+    onArrived: function (mailId) {
+        pubusb.publish('mail:arrived', null, mailId);
+    },
+    …
+});
+</code></pre>
+
+<p>Also, you may want to think subscriber publish as below.</p>
+
+<pre><code>pubsub.subscribe('mail:arrived', function (context, mailId) {
+    mailer.display(mailId);
+    pubsub.publish('mail:displayed'); // call 'mail:displayed' subscribers
+});
+
+pubsub.subscribe('mail:arrived', function (context, mailId) {
+    desktop.notice('a mail has arrived');
+    pubsub.publish('descktop:noticed'); // call 'desktop:noticed' subscribers
+});
+
+mailer.polling({
+    onArrived: function (mailId) {
+        pubusb.publish('mail:arrived', null, mailId);
+    },
+    …
+});
+</code></pre>
+
+<h3>pubsub#Context</h3>
+
+<p>pubsub#Context is the most useful API in this library.
+It is a bit more complex cases, there will often suffer from following situation.</p>
+
+<pre><code>// in jQuery
+pubsub.subscribe('favorite:add', function (context, id) {
+    $.ajax({
+        url: xxx,
+        data: {id: id}
+    }).done(function () {
+        // Can not access the $(evt.currentTarget) here.
+    });
+});
+
+$(favoriteIcon).bind('click', function (evt) {
+    var id = $(evt.currentTarget).data('id');
+    pubsub.publish('favorite:add', null, id);
+    // want to change the class when "favorite:add" is completed.
+    // ex. $(evt.currentTarget).addClass('is-added');
+    // However, since the processing of "favorite:add" is async, I can not write it here.
+});
+</code></pre>
+
+<p>This can be solved by using the pubsub#Context.</p>
+
+<pre><code>// in jQuery
+pubsub.subscribe('favorite:add', function (context, id) {
+    $.ajax({
+        url: xxx,
+        data: {id: id}
+    }).done(function () {
+        context.publish('favorite.added');
+    });
+});
+
+$(favoriteIcon).bind('click', function (evt) {
+    var target = $(evt.currentTarget),
+        id = target.data('id'),
+        localContext = pubsub.Context.create();
+
+    localContext.subscribe('favorite.added', function (context) {
+        target.addClass('is-added');
+    });
+
+    pubsub.publish('favorite:add', localContext, id);
+});
+</code></pre>
+
+<h2>All API</h2>
+
+<ul>
+<li>Pubsub#create()</li>
+<li>pubsub#publish(eventName, context/null, arg1, arg2...)</li>
+<li>pubsub#subscribe(eventName, handler)</li>
+<li>pubsub#globalContext</li>
+<li>pubsub#Context</li>
+<li>Context#create()</li>
+<li>context#publish(eventName, context/null, arg1, arg2...)</li>
+<li>context#subscribe(eventName, handler)</li>
+</ul><h2>Contributors</h2>
+
+<ul>
+<li><a href="http://github.com/nazomikan">@nazomikan</a></li>
+</ul><h2>License:</h2>
+
+<pre>
+(The MIT License)
+
+Copyright (c) 2013 nazomikan
+https://github.com/nazomikan/PubsubJS
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/nazomikan">nazomikan</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
