@@ -5,7 +5,7 @@ PubsubJS
 
 ## Description
 
-pubsubjs is Micro pubsub library which provides the observer pattern to JavaScript object.
+pubsubjs is Micro pubsub library which provides the observer pattern to JavaScript.
 
 It works in the browser and server (Node).
 
