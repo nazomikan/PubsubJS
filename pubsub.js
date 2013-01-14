@@ -53,7 +53,7 @@
 
     Pubsub.apply(pubsub, args);
     return pubsub;
-  }
+  };
 
   Pubsub.prototype.publish = function (/*eventName, context, args*/) {
     var args = slice.call(arguments)
