@@ -40,7 +40,7 @@ and then include it in your project with:
 
 ###pubsub#publish / pubsub#subscribe
 
-For example, "The display of notifications and mail to desktop when mail arrives" can be written using B as follows.
+For example, "The display of notifications and mail to desktop when mail arrives" can be written using PubsubJS as follows.
 
     // Define the global subscriber use of pubsubjs
     pubsub.subscribe('mail:arrived', function (context, mailId) {
@@ -97,7 +97,8 @@ It is a bit more complex cases, there will often suffer from following situation
         pubsub.publish('favorite:add', null, id);
         // want to change the class when "favorite:add" is completed.
         // ex. $(evt.currentTarget).addClass('is-added');
-        // However, since the processing of "favorite:add" is async, I can not write it here.
+        // However, since the processing of "favorite:add" is async,
+        // I can not write it here.
     });
 
 This can be solved by using the pubsub#Context.
