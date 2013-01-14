@@ -1,8 +1,8 @@
 {
   "name": "pubsubjs",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "micro pubsub library",
-  "tags": ["node", "pubsub", "browser"],
+  "tags": ["node", "pubsub", "browser", "observer", "event", "server", "client"],
   "author": "nazomikan <nazomikan@gmail.com>",
   "repository": {
     "type": "git",
