@@ -53,7 +53,7 @@ For example, "The display of notifications and mail to desktop when mail arrives
 
     mailer.polling({
         onArrived: function (mailId) {
-            pubusb.publish('mail:arrived', null, mailId);
+            pubsub.publish('mail:arrived', null, mailId);
         },
         …
     });
@@ -73,7 +73,7 @@ Also, you may want to think subscriber publish as below.
 
     mailer.polling({
         onArrived: function (mailId) {
-            pubusb.publish('mail:arrived', null, mailId);
+            pubsub.publish('mail:arrived', null, mailId);
         },
         …
     });
