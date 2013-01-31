@@ -87,7 +87,7 @@ pubsub.subscribe('mail:arrived', function (context, mailId) {
 
 mailer.polling({
     onArrived: function (mailId) {
-        pubusb.publish('mail:arrived', null, mailId);
+        pubsub.publish('mail:arrived', null, mailId);
     },
     …
 });
@@ -111,7 +111,7 @@ pubsub.subscribe('mail:arrived', function (context, mailId) {
 
 mailer.polling({
     onArrived: function (mailId) {
-        pubusb.publish('mail:arrived', null, mailId);
+        pubsub.publish('mail:arrived', null, mailId);
     },
     …
 });
