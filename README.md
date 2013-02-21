@@ -12,7 +12,12 @@ It works in the browser and server (Node).
 
 ## Usage
 
-In browser include single JavaScript file:
+In browser DownLoad pubsub.js,
+or install via bower
+
+    $ bower install pubsubjs
+
+and then include single JavaScript file:
 
     <script type="text/javascript" src="pubsub.js"></script>
     <script type="text/javascript">
