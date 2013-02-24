@@ -17,15 +17,11 @@
 
   Context.create = function createContext() {
     var context = createObject(Context.prototype)
-      , args = slice.call(arguments);
+      , args = slice.call(arguments)
+      ;
 
     Context.apply(context, args);
     return context;
-  };
-
-  Context.prototype.subscribe = function (eventName, handler) {
-    this.subscribers[eventName] = this.subscribers[eventName] || [];
-    this.subscribers[eventName].push(handler);
   };
 
   Context.prototype.publish = function (/*eventName, context, args*/) {
@@ -42,6 +38,30 @@
     }
   };
 
+  Context.prototype.subscribe = function (eventName, handler) {
+    this.subscribers[eventName] = this.subscribers[eventName] || [];
+    this.subscribers[eventName].push(handler);
+  };
+
+  Context.prototype.unsubscribe = function (eventName, handler) {
+    var subscribers = this.subscribers
+      , targetSubscribers = subscribers[eventName] || []
+      , i
+      , iz
+      ;
+
+    if (!handler) {
+      delete subscribers[eventName];
+      return;
+    }
+
+    for (i = targetSubscribers.length - 1, iz = 0; i >= iz; i--) {
+      if (targetSubscribers[i] === handler) {
+        targetSubscribers.splice(i, 1);
+      }
+    }
+  };
+
   function Pubsub() {
     this.Context = Context;
     this.globalContext = Context.create();
@@ -49,7 +69,8 @@
 
   Pubsub.create = function () {
     var pubsub = createObject(Pubsub.prototype)
-      , args = slice.call(arguments);
+      , args = slice.call(arguments)
+      ;
 
     Pubsub.apply(pubsub, args);
     return pubsub;
@@ -66,8 +87,15 @@
   };
 
   Pubsub.prototype.subscribe = function (eventName, handler) {
-    var context = this.globalContext;
+    var context = this.globalContext
+      ;
     context.subscribe(eventName, handler);
+  };
+
+  Pubsub.prototype.unsubscribe = function (eventName, handler) {
+    var context = this.globalContext
+      ;
+    context.unsubscribe(eventName, handler);
   };
 
   function createObject(obj) {

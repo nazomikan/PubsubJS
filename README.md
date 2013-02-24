@@ -48,17 +48,17 @@ and then include it in your project with:
 For example, "The display of notifications and mail to desktop when mail arrives" can be written using PubsubJS as follows.
 
     // Define the global subscriber use of pubsubjs
-    pubsub.subscribe('mail:arrived', function (context, mailId) {
+    pubsub.subscribe('mail.arrived', function (context, mailId) {
         mailer.display(mailId);
     });
 
-    pubsub.subscribe('mail:arrived', function (context, mailId) {
+    pubsub.subscribe('mail.arrived', function (context, mailId) {
         desktop.notice('a mail has arrived');
     });
 
     mailer.polling({
         onArrived: function (mailId) {
-            pubsub.publish('mail:arrived', null, mailId);
+            pubsub.publish('mail.arrived', null, mailId);
         },
         …
     });
@@ -66,29 +66,49 @@ For example, "The display of notifications and mail to desktop when mail arrives
 
 Also, you may want to think subscriber publish as below.
 
-    pubsub.subscribe('mail:arrived', function (context, mailId) {
+    pubsub.subscribe('mail.arrived', function (context, mailId) {
         mailer.display(mailId);
-        pubsub.publish('mail:displayed'); // call 'mail:displayed' subscribers
+        pubsub.publish('mail.displayed'); // call 'mail.displayed' subscribers
     });
 
-    pubsub.subscribe('mail:arrived', function (context, mailId) {
+    pubsub.subscribe('mail.arrived', function (context, mailId) {
         desktop.notice('a mail has arrived');
-        pubsub.publish('descktop:noticed'); // call 'desktop:noticed' subscribers
+        pubsub.publish('descktop.noticed'); // call 'desktop.noticed' subscribers
     });
 
     mailer.polling({
         onArrived: function (mailId) {
-            pubsub.publish('mail:arrived', null, mailId);
+            pubsub.publish('mail.arrived', null, mailId);
         },
         …
     });
+
+
+###pubsub#unsubscribe
+When are notified first and a subscriber is performed.
+It is realizable by using `unsubscribe`.
+
+    var pubsub = PubSub.create()
+      , actual = {a: 0}
+      ;
+
+    var once = function () {
+      actual.a += 1;
+      pubsub.unsubscribe('once', once);
+    };
+
+    pubsub.subscribe('once', once);
+    pubsub.publish('once');
+    pubsub.publish('once');
+    assert.strictEqual(1, actual.a); // pass
+
 
 ###pubsub#Context
 pubsub#Context is the most useful API in this library.
 It is a bit more complex cases, there will often suffer from following situation.
 
     // in jQuery
-    pubsub.subscribe('favorite:add', function (context, id) {
+    pubsub.subscribe('favorite.add', function (context, id) {
         $.ajax({
             url: xxx,
             data: {id: id}
@@ -99,17 +119,17 @@ It is a bit more complex cases, there will often suffer from following situation
 
     $(favoriteIcon).bind('click', function (evt) {
         var id = $(evt.currentTarget).data('id');
-        pubsub.publish('favorite:add', null, id);
-        // want to change the class when "favorite:add" is completed.
+        pubsub.publish('favorite.add', null, id);
+        // want to change the class when "favorite.add" is completed.
         // ex. $(evt.currentTarget).addClass('is-added');
-        // However, since the processing of "favorite:add" is async,
+        // However, since the processing of "favorite.add" is async,
         // I can not write it here.
     });
 
 This can be solved by using the pubsub#Context.
 
     // in jQuery
-    pubsub.subscribe('favorite:add', function (context, id) {
+    pubsub.subscribe('favorite.add', function (context, id) {
         $.ajax({
             url: xxx,
             data: {id: id}
@@ -127,18 +147,21 @@ This can be solved by using the pubsub#Context.
             target.addClass('is-added');
         });
 
-        pubsub.publish('favorite:add', localContext, id);
+        pubsub.publish('favorite.add', localContext, id);
     });
+
 
 ##All API
  * Pubsub#create()
  * pubsub#publish(eventName, context/null, arg1, arg2...)
  * pubsub#subscribe(eventName, handler)
+ * pubsub#unsubscribe(eventName, [handler])
  * pubsub#globalContext
  * pubsub#Context
  * Context#create()
  * context#publish(eventName, context/null, arg1, arg2...)
  * context#subscribe(eventName, handler)
+ * context#unsubscribe(eventName, [handler])
 
 
 ##Contributors
