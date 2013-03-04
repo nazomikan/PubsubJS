@@ -84,23 +84,41 @@ Also, you may want to think subscriber publish as below.
     });
 
 
-###pubsub#unsubscribe
+###pubsub#subscribeOnce
 When are notified first and a subscriber is performed.
+It is realizable by using `subscribeOnce`.
+
+    var pubsub = PubSub.create()
+      , actual = {a: 0}
+      ;
+
+    pubsub.subscribeOnce('once', function () {
+      actual.a += 1;
+    });
+    pubsub.publish('once');
+    pubsub.publish('once');
+    assert.strictEqual(1, actual.a); // pass
+
+###pubsub#unsubscribe
+You may think that you would like to remove subscriber at the time of some conditions. 
 It is realizable by using `unsubscribe`.
 
     var pubsub = PubSub.create()
       , actual = {a: 0}
       ;
 
-    var once = function () {
+    var fn = function () {
       actual.a += 1;
-      pubsub.unsubscribe('once', once);
+      if (actual.a > 1) {
+        pubsub.unsubscribe('once', fn);
+      }
     };
 
-    pubsub.subscribe('once', once);
-    pubsub.publish('once');
-    pubsub.publish('once');
-    assert.strictEqual(1, actual.a); // pass
+    pubsub.subscribe('event', fn);
+    pubsub.publish('event');
+    pubsub.publish('event');
+    pubsub.publish('event');
+    assert.strictEqual(2, actual.a); // pass
 
 
 ###pubsub#Context
@@ -155,12 +173,14 @@ This can be solved by using the pubsub#Context.
  * Pubsub#create()
  * pubsub#publish(eventName, context/null, arg1, arg2...)
  * pubsub#subscribe(eventName, handler)
+ * pubsub#subscribeOnce(eventName, handler)
  * pubsub#unsubscribe(eventName, [handler])
  * pubsub#globalContext
  * pubsub#Context
  * Context#create()
  * context#publish(eventName, context/null, arg1, arg2...)
  * context#subscribe(eventName, handler)
+ * context#subscribeOnce(eventName, handler)
  * context#unsubscribe(eventName, [handler])
 
 

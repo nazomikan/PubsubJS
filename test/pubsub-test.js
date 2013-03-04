@@ -135,6 +135,45 @@ describe('Pubsub', function () {
     });
   });
 
+  describe('#subscribeOnce', function () {
+    describe('when given globalContext', function () {
+      it('should be performed only once', function () {
+        var pubsub = PubSub.create()
+          , actual = {a: 0}
+          ;
+
+        pubsub.subscribeOnce('event', function (context, num) {
+          actual.a += num;
+        });
+
+        pubsub.publish('event', null, 1);
+        pubsub.publish('event', null, 1);
+        assert.strictEqual(1, actual.a);
+      });
+    });
+
+    describe('when given localContext', function () {
+      it('should be performed only once', function () {
+        var pubsub = PubSub.create()
+          , localContext = pubsub.Context.create()
+          , actual = {a: 0}
+          ;
+
+        localContext.subscribeOnce('evented', function (context, num) {
+          actual.a += num;
+        });
+
+        pubsub.subscribe('event', function (context, num) {
+          context.publish('evented', null, num);
+          context.publish('evented', null, num);
+        });
+
+        pubsub.publish('event', localContext, 1);
+        assert.strictEqual(1, actual.a);
+      });
+    });
+  });
+
   describe('#unsubscribe', function () {
     describe('when only the event name is specified', function () {
       it('should canceled subscribers of the specified event', function () {

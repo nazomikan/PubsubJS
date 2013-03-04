@@ -43,6 +43,20 @@
     this.subscribers[eventName].push(handler);
   };
 
+  Context.prototype.subscribeOnce = function (eventName, handler) {
+    var that = this
+      , func
+      ;
+
+    func = function () {
+      var args = slice.call(arguments);
+      handler.apply(null, args);
+      that.unsubscribe(eventName, func);
+    };
+
+    that.subscribe(eventName, func);
+  };
+
   Context.prototype.unsubscribe = function (eventName, handler) {
     var subscribers = this.subscribers
       , targetSubscribers = subscribers[eventName] || []
@@ -90,6 +104,12 @@
     var context = this.globalContext
       ;
     context.subscribe(eventName, handler);
+  };
+
+  Pubsub.prototype.subscribeOnce = function (eventName, handler) {
+    var context = this.globalContext
+      ;
+    context.subscribeOnce(eventName, handler);
   };
 
   Pubsub.prototype.unsubscribe = function (eventName, handler) {

@@ -1,6 +1,6 @@
 {
   "name": "pubsubjs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "micro pubsub library",
   "tags": ["node", "pubsub", "browser", "observer", "event", "server", "client", "publish", "subscribe"],
   "keywords": ["node", "pubsub", "browser", "observer", "event", "server", "client", "publish", "subscribe"],
