@@ -43,7 +43,13 @@
 
 <h2>Usage</h2>
 
-<p>In browser include single JavaScript file:</p>
+<p>In browser DownLoad pubsub.js,
+or install via bower</p>
+
+<pre><code>$ bower install pubsubjs
+</code></pre>
+
+<p>and then include single JavaScript file:</p>
 
 <pre><code>&lt;script type="text/javascript" src="pubsub.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
@@ -77,17 +83,17 @@
 <p>For example, "The display of notifications and mail to desktop when mail arrives" can be written using PubsubJS as follows.</p>
 
 <pre><code>// Define the global subscriber use of pubsubjs
-pubsub.subscribe('mail:arrived', function (context, mailId) {
+pubsub.subscribe('mail.arrived', function (context, mailId) {
     mailer.display(mailId);
 });
 
-pubsub.subscribe('mail:arrived', function (context, mailId) {
+pubsub.subscribe('mail.arrived', function (context, mailId) {
     desktop.notice('a mail has arrived');
 });
 
 mailer.polling({
     onArrived: function (mailId) {
-        pubsub.publish('mail:arrived', null, mailId);
+        pubsub.publish('mail.arrived', null, mailId);
     },
     …
 });
@@ -95,26 +101,62 @@ mailer.polling({
 
 <p>Also, you may want to think subscriber publish as below.</p>
 
-<pre><code>pubsub.subscribe('mail:arrived', function (context, mailId) {
+<pre><code>pubsub.subscribe('mail.arrived', function (context, mailId) {
     mailer.display(mailId);
-
-    // call 'mail:displayed' subscribers
-    pubsub.publish('mail:displayed');
+    pubsub.publish('mail.displayed'); // call 'mail.displayed' subscribers
 });
 
-pubsub.subscribe('mail:arrived', function (context, mailId) {
+pubsub.subscribe('mail.arrived', function (context, mailId) {
     desktop.notice('a mail has arrived');
-
-    // call 'desktop:noticed' subscribers
-    pubsub.publish('descktop:noticed');
+    pubsub.publish('descktop.noticed'); // call 'desktop.noticed' subscribers
 });
 
 mailer.polling({
     onArrived: function (mailId) {
-        pubsub.publish('mail:arrived', null, mailId);
+        pubsub.publish('mail.arrived', null, mailId);
     },
     …
 });
+</code></pre>
+
+<h3>pubsub#subscribeOnce</h3>
+
+<p>When are notified first and a subscriber is performed.
+It is realizable by using <code>subscribeOnce</code>.</p>
+
+<pre><code>var pubsub = PubSub.create()
+  , actual = {a: 0}
+  ;
+
+pubsub.subscribeOnce('once', function () {
+  actual.a += 1;
+});
+pubsub.publish('once');
+pubsub.publish('once');
+assert.strictEqual(1, actual.a); // pass
+</code></pre>
+
+<h3>pubsub#unsubscribe</h3>
+
+<p>You may think that you would like to remove subscriber at the time of some conditions. 
+It is realizable by using <code>unsubscribe</code>.</p>
+
+<pre><code>var pubsub = PubSub.create()
+  , actual = {a: 0}
+  ;
+
+var fn = function () {
+  actual.a += 1;
+  if (actual.a &gt; 1) {
+    pubsub.unsubscribe('once', fn);
+  }
+};
+
+pubsub.subscribe('event', fn);
+pubsub.publish('event');
+pubsub.publish('event');
+pubsub.publish('event');
+assert.strictEqual(2, actual.a); // pass
 </code></pre>
 
 <h3>pubsub#Context</h3>
@@ -123,7 +165,7 @@ mailer.polling({
 It is a bit more complex cases, there will often suffer from following situation.</p>
 
 <pre><code>// in jQuery
-pubsub.subscribe('favorite:add', function (context, id) {
+pubsub.subscribe('favorite.add', function (context, id) {
     $.ajax({
         url: xxx,
         data: {id: id}
@@ -134,18 +176,18 @@ pubsub.subscribe('favorite:add', function (context, id) {
 
 $(favoriteIcon).bind('click', function (evt) {
     var id = $(evt.currentTarget).data('id');
-    pubsub.publish('favorite:add', null, id);
-    // want to change the class when "favorite:add" is completed.
+    pubsub.publish('favorite.add', null, id);
+    // want to change the class when "favorite.add" is completed.
     // ex. $(evt.currentTarget).addClass('is-added');
-    // However, since the processing of "favorite:add" is async,
-    //  I can not write it here.
+    // However, since the processing of "favorite.add" is async,
+    // I can not write it here.
 });
 </code></pre>
 
 <p>This can be solved by using the pubsub#Context.</p>
 
 <pre><code>// in jQuery
-pubsub.subscribe('favorite:add', function (context, id) {
+pubsub.subscribe('favorite.add', function (context, id) {
     $.ajax({
         url: xxx,
         data: {id: id}
@@ -163,7 +205,7 @@ $(favoriteIcon).bind('click', function (evt) {
         target.addClass('is-added');
     });
 
-    pubsub.publish('favorite:add', localContext, id);
+    pubsub.publish('favorite.add', localContext, id);
 });
 </code></pre>
 
@@ -173,11 +215,15 @@ $(favoriteIcon).bind('click', function (evt) {
 <li>Pubsub#create()</li>
 <li>pubsub#publish(eventName, context/null, arg1, arg2...)</li>
 <li>pubsub#subscribe(eventName, handler)</li>
+<li>pubsub#subscribeOnce(eventName, handler)</li>
+<li>pubsub#unsubscribe(eventName, [handler])</li>
 <li>pubsub#globalContext</li>
 <li>pubsub#Context</li>
 <li>Context#create()</li>
 <li>context#publish(eventName, context/null, arg1, arg2...)</li>
 <li>context#subscribe(eventName, handler)</li>
+<li>context#subscribeOnce(eventName, handler)</li>
+<li>context#unsubscribe(eventName, [handler])</li>
 </ul><h2>Contributors</h2>
 
 <ul>
@@ -216,7 +262,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
         </footer>
 
-
+        
       </div>
     </div>
   </body>
