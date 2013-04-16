@@ -8,9 +8,7 @@
   }
 })('Pubsub', this, function () {
   var arrayProto = Array.prototype
-    , objectProto = Object.prototype
     , slice = arrayProto.slice
-    , toString = objectProto.toString
     ;
 
   function Context() {
@@ -142,7 +140,7 @@
   function checkContext(obj) {
     if (!(obj instanceof Context) &&
       !(obj instanceof Pubsub) &&
-      toString.call(obj) !== "[object Null]") {
+      !(obj == null)) {
       return false;
     }
     return true;
