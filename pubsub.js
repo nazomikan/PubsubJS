@@ -29,12 +29,13 @@
       , eventName = args.shift()
       , context = args.shift()
       , subscribers = this.subscribers[eventName] || []
+      , params = [context].concat(args)
       , i
       , l
       ;
 
     for (i = 0, l = subscribers.length; i < l; i++) {
-      subscribers[i].apply(null, [context].concat(args));
+      subscribers[i].apply(null, params);
     }
   };
 
@@ -95,9 +96,10 @@
       , eventName = args.shift()
       , globalContext = this.globalContext
       , context = args.shift()
+      , params = [eventName, context].concat(args)
       ;
 
-    globalContext.publish.apply(globalContext, [eventName, context].concat(args));
+    globalContext.publish.apply(globalContext, params);
   };
 
   Pubsub.prototype.subscribe = function (eventName, handler) {
