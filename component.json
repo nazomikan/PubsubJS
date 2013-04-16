@@ -1,6 +1,6 @@
 {
     "name": "pubsubjs",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "main": "./pubsub.js",
     "dependencies": {},
     "ignore": [

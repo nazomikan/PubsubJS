@@ -8,7 +8,9 @@
   }
 })('Pubsub', this, function () {
   var arrayProto = Array.prototype
+    , objectProto = Object.prototype
     , slice = arrayProto.slice
+    , toString = objectProto.toString
     ;
 
   function Context() {
@@ -33,6 +35,10 @@
       , i
       , l
       ;
+
+    if (!checkContext(context)) {
+      throw new TypeError('publish: The second arguments must be pubsub#Context or Null');
+    }
 
     for (i = 0, l = subscribers.length; i < l; i++) {
       subscribers[i].apply(null, params);
@@ -131,6 +137,15 @@
     function F() {}
     F.prototype = obj;
     return new F();
+  }
+
+  function checkContext(obj) {
+    if (!(obj instanceof Context) &&
+      !(obj instanceof Pubsub) &&
+      toString.call(obj) !== "[object Null]") {
+      return false;
+    }
+    return true;
   }
 
   return Pubsub;

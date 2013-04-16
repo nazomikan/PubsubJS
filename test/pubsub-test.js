@@ -77,6 +77,18 @@ describe('Pubsub', function () {
         assert.strictEqual(6, actual.c);
       });
     });
+
+    describe('when given not Context and not Null', function () {
+      it('should raise TypeError', function () {
+        var pubsub = PubSub.create
+          ;
+
+        assert.throws(function () {
+          pubsub.publish('event', []);
+        },
+        TypeError);
+      });
+    });
   });
 
   describe('#subscribe', function () {
