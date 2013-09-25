@@ -55,6 +55,7 @@
       , params = [context].concat(args)
       , i
       , l
+      , c
       ;
 
     if (!checkContext(context)) {
