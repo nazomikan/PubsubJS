@@ -162,6 +162,28 @@ describe('Pubsub', function () {
         pubsub.publish('event', null, 1);
         assert.strictEqual(1, actual.a);
       });
+
+      describe('when subscribeOnce is execute more than once', function () {
+        it('should be performed only once', function () {
+          var pubsub = PubSub.create()
+            , res = []
+            , i
+            , iz
+            ;
+
+          for (i = 0, iz = 3; i < iz; i++) {
+            pubsub.subscribeOnce('event', function (n) {
+              return function () {
+                res.push(n);
+              };
+            }(i));
+          }
+
+          pubsub.publish('event', null);
+          pubsub.publish('event', null);
+          assert.deepEqual([0, 1, 2], res);
+        });
+      });
     });
 
     describe('when given localContext', function () {
@@ -182,6 +204,32 @@ describe('Pubsub', function () {
 
         pubsub.publish('event', localContext, 1);
         assert.strictEqual(1, actual.a);
+      });
+
+      describe('when subscribeOnce is execute more than once', function () {
+        it('should be performed only once', function () {
+          var pubsub = PubSub.create()
+            , localContext = pubsub.Context.create()
+            , res = []
+            , i
+            , iz
+            ;
+
+          for (i = 0, iz = 3; i < iz; i++) {
+            localContext.subscribeOnce('evented', function (n) {
+              return function () {
+                res.push(n);
+              };
+            }(i));
+          }
+
+          pubsub.subscribe('event', function (context, num) {
+            context.publish('evented');
+          });
+
+          pubsub.publish('event', localContext);
+          assert.deepEqual([0, 1, 2], res);
+        });
       });
     });
   });
