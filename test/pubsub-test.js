@@ -427,5 +427,47 @@ describe('Pubsub', function () {
       });
     });
   });
+
+  describe('#dump', function () {
+    describe('when globalContext has any event and handlers', function () {
+      describe('when `dump` doesnt give eventName', function () {
+        it('should return all subscribers', function () {
+          var pubsub = PubSub.create()
+            , actual
+            ;
+
+          function a() {}
+          function b() {}
+          function c() {}
+
+          pubsub.subscribe('event1', a);
+          pubsub.subscribe('event1', b);
+          pubsub.subscribe('event2', c);
+
+          actual = pubsub.dump();
+          assert.deepEqual(actual, {event1: [a, b], event2: [c]});
+        });
+      });
+
+      describe('when `dump` give eventName', function () {
+        it('should return all subscribers related eventName', function () {
+          var pubsub = PubSub.create()
+            , actual
+            ;
+
+          function a() {}
+          function b() {}
+          function c() {}
+
+          pubsub.subscribe('event1', a);
+          pubsub.subscribe('event1', b);
+          pubsub.subscribe('event2', c);
+
+          actual = pubsub.dump('event1');
+          assert.deepEqual(actual, [a, b]);
+        });
+      });
+    });
+  });
 });
 

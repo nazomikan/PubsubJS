@@ -107,6 +107,10 @@
     }
   };
 
+  Context.prototype.dump = function (eventName) {
+    return eventName ? (this.subscribers[eventName] || []) : this.subscribers;
+  };
+
   function Pubsub() {
     this.Context = Context;
     this.globalContext = Context.create();
@@ -149,6 +153,12 @@
       ;
     context.unsubscribe(eventName, handler);
   };
+
+  Pubsub.prototype.dump = function (eventName) {
+    var context = this.globalContext
+      ;
+    return context.dump(eventName);
+  }
 
   function createObject(obj) {
     if (Object.create) {
