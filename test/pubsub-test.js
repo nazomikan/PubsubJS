@@ -1,5 +1,8 @@
 var assert = require('assert')
-  , PubSub = require('../pubsub.js');
+  , PubSub = require('../pubsub.js')
+  , browser = new require('mock-browser').mocks.MockBrowser
+  , window = browser.createWindow()
+  , $ = require('jquery')(window)
   ;
 
 describe('Pubsub', function () {
@@ -310,7 +313,7 @@ describe('Pubsub', function () {
           , actual = {a: 0}
           ;
 
-        pubsub.subscribe('event', function (context) {
+        pubsub.subscribe('even t', function (context) {
           context.publish('evented', null, 1);
         });
 
@@ -423,6 +426,30 @@ describe('Pubsub', function () {
 
           pubsub.publish('event', localContext);
           assert.strictEqual(1, actual.a);
+        });
+      });
+      describe('When the using jQuery.proxy wrapped Fn passed', function () {
+        it('should canceled the applicable handler of the specified event', function () {
+          var pubsub = PubSub.create()
+            , actual = {a: 0}
+            , obj
+            ;
+
+          obj = {
+            a: function () {
+              actual.a += 1;
+            },
+            b: function () {
+              actual.a += 2;
+            }
+          };
+
+          pubsub.subscribe('event', $.proxy(obj, 'a'));
+          pubsub.subscribe('event', $.proxy(obj, 'b'));
+
+          pubsub.unsubscribe('event', $.proxy(obj, 'a'));
+          pubsub.publish('event', null);
+          assert.strictEqual(2, actual.a);
         });
       });
     });

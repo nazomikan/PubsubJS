@@ -101,7 +101,8 @@
     }
 
     for (i = targetSubscribers.length - 1, iz = 0; i >= iz; i--) {
-      if (targetSubscribers[i] === handler) {
+      // fn.guid -> support jquery.proxy
+      if (targetSubscribers[i] === handler || (handler.guid && (targetSubscribers[i].guid === handler.guid))) {
         targetSubscribers.splice(i, 1);
       }
     }
