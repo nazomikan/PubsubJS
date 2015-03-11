@@ -313,7 +313,7 @@ describe('Pubsub', function () {
           , actual = {a: 0}
           ;
 
-        pubsub.subscribe('even t', function (context) {
+        pubsub.subscribe('event', function (context) {
           context.publish('evented', null, 1);
         });
 
