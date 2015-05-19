@@ -83,7 +83,7 @@ pubsub.subscribe('mail.arrived', function (context, mailId) {
 
 pubsub.subscribe('mail.arrived', function (context, mailId) {
     desktop.notice('a mail has arrived');
-    pubsub.publish('descktop.noticed'); // call 'desktop.noticed' subscribers
+    pubsub.publish('desktop.noticed'); // call 'desktop.noticed' subscribers
 });
 
 mailer.polling({
