@@ -6,6 +6,21 @@ var assert = require('assert')
   ;
 
 describe('Pubsub', function () {
+  describe('#exports', function () {
+    it('should exports in global', function () {
+      var pubsub = PubSub.create().exports();
+      assert.strictEqual(pubsub, global.pubsub);
+      delete global.pubsub;
+    });
+
+    describe('when space is given', function () {
+      it('should exports in global', function () {
+        var pubsub = PubSub.create().exports('hoge');
+        assert.strictEqual(pubsub, global.hoge);
+        delete global.hoge;
+      });
+    });
+  });
   describe('#publish', function () {
     describe('when registed one subscriber', function () {
       it('should call a subscriber given a arguments when gave #publish one argument', function () {

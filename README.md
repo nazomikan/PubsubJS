@@ -41,6 +41,14 @@ and then include it in your project with:
 var pubsub = require('pubsubjs').create();
 ```
 
+
+if wanted to export it to the global space
+
+```javascript
+var pubsub = Pubsub.create().exports();
+```
+
+
 ##What is Pubsub
 
 >Publish–subscribe is a messaging pattern where senders of messages, called publishers, do not program the messages to be sent directly to specific receivers, called subscribers. Published messages are characterized into classes, without knowledge of what, if any, subscribers there may be. Subscribers express interest in one or more classes, and only receives messages that are of interest, without knowledge of what, if any, publishers there are.
@@ -237,6 +245,7 @@ Notice: This API is for debugging purposes only.  Please do not use in productio
 ##All API
 
  * Pubsub#create()
+ * pubsub#exports(namespace = pubsub)
  * pubsub#publish(eventName, context/null, arg1, arg2...)
  * pubsub#subscribe(eventName, handler)
  * pubsub#subscribeOnce(eventName, handler)

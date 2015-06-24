@@ -126,6 +126,13 @@
     return pubsub;
   };
 
+  Pubsub.prototype.exports = function (space) {
+    var global = Function("return this")();
+    space = space || "pubsub";
+    global[space] = this;
+    return this;
+  };
+
   Pubsub.prototype.publish = function (/*eventName, context, args*/) {
     var args = slice.call(arguments)
       , eventName = args.shift()
