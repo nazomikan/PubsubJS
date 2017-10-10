@@ -2,6 +2,7 @@ PubsubJS
 ===
 
 [![build status](https://secure.travis-ci.org/nazomikan/PubsubJS.png)](http://travis-ci.org/nazomikan/PubsubJS)
+[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/pubsubjs/badge?style=rounded)](https://www.jsdelivr.com/package/npm/pubsubjs)
 
 ## Description
 
